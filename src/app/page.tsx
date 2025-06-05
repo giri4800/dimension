@@ -129,9 +129,9 @@ export default function HomePage() {
               setCalculatedDimensions(null);
             }}
           >
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="upload">Upload Image</TabsTrigger>
-              <TabsTrigger value="camera">Live Camera</TabsTrigger>
+            <TabsList className="grid w-full">
+              <TabsTrigger className="text-center ml-90" value="upload">Upload Image</TabsTrigger>
+               
             </TabsList>
             <TabsContent value="upload">
               <ImageUploadTab onImageSelected={handleImageSelectedOrCaptured} />

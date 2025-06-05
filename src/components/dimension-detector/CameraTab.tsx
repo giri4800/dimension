@@ -86,7 +86,7 @@ export function CameraTab({ onFrameCaptured }: CameraTabProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Live Camera</CardTitle>
+        <CardTitle></CardTitle>
         <CardDescription>Use your device camera to capture an object for dimension detection.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
