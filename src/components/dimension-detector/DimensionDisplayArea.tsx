@@ -1,7 +1,9 @@
+
 "use client";
 
 import Image from 'next/image';
-import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { MoveHorizontal, MoveVertical } from 'lucide-react';
 
 interface DimensionDisplayAreaProps {
   imageSrc: string | null;
@@ -11,9 +13,9 @@ interface DimensionDisplayAreaProps {
 export function DimensionDisplayArea({ imageSrc, dimensions }: DimensionDisplayAreaProps) {
   if (!imageSrc) {
     return (
-      <Card className="flex items-center justify-center h-64 bg-muted">
-        <p className="text-muted-foreground">Image will appear here</p>
-      </Card>
+      <div className="flex items-center justify-center h-64 bg-muted rounded-lg border">
+        <p className="text-muted-foreground">Image preview will appear here</p>
+      </div>
     );
   }
 
@@ -22,37 +24,33 @@ export function DimensionDisplayArea({ imageSrc, dimensions }: DimensionDisplayA
       <Image 
         src={imageSrc} 
         alt="Processed object" 
-        layout="fill" 
-        objectFit="contain" 
+        fill // Changed from layout="fill" objectFit="contain" to fill for Next 13+
+        style={{ objectFit: 'contain' }} // Apply objectFit via style prop
+        priority // Good to add for LCP images if this is often visible on load
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Example sizes, adjust as needed
         data-ai-hint="measured object"
       />
       {dimensions && (
         <>
-          {/* Mock dimension overlay. In a real app, this would be more precise. */}
-          <div 
-            className="absolute text-accent-foreground bg-accent/80 px-2 py-1 rounded text-xs shadow-lg"
-            style={{ top: '45%', left: '50%', transform: 'translateX(-50%) translateY(-100px)' }}
-            aria-label={`Height: ${dimensions.height} ${dimensions.unit}`}
-          >
-            H: {dimensions.height}{dimensions.unit}
-          </div>
-          <div 
-            className="absolute text-accent-foreground bg-accent/80 px-2 py-1 rounded text-xs shadow-lg"
-            style={{ top: '50%', left: '45%', transform: 'translateY(-50%) translateX(-100px)' }}
+          {/* Width Badge - Top Center */}
+          <Badge
+            variant="outline"
+            className="absolute bg-background/80 text-foreground shadow-lg text-sm font-semibold"
+            style={{ top: '16px', left: '50%', transform: 'translateX(-50%)', padding: '6px 10px' }}
             aria-label={`Width: ${dimensions.width} ${dimensions.unit}`}
           >
-            W: {dimensions.width}{dimensions.unit}
-          </div>
+            <MoveHorizontal className="h-4 w-4 mr-2 text-primary" /> W: {dimensions.width} {dimensions.unit}
+          </Badge>
 
-          {/* Example of drawing lines (simplified) */}
-           <div 
-            className="absolute border-accent border-dashed border-r-2"
-            style={{ height: '30%', width: '1px', top: '35%', left: 'calc(50% - 50px)' }}
-           />
-           <div 
-            className="absolute border-accent border-dashed border-t-2"
-            style={{ width: '30%', height: '1px', top: 'calc(50% + 50px)', left: '35%' }}
-           />
+          {/* Height Badge - Middle Left */}
+          <Badge
+            variant="outline"
+            className="absolute bg-background/80 text-foreground shadow-lg text-sm font-semibold"
+            style={{ left: '16px', top: '50%', transform: 'translateY(-50%)', padding: '6px 10px' }}
+            aria-label={`Height: ${dimensions.height} ${dimensions.unit}`}
+          >
+            <MoveVertical className="h-4 w-4 mr-2 text-primary" /> H: {dimensions.height} {dimensions.unit}
+          </Badge>
         </>
       )}
     </div>

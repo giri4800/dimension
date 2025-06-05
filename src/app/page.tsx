@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -11,7 +12,7 @@ import { CalibrationControls } from '@/components/dimension-detector/Calibration
 import { ExportControls } from '@/components/dimension-detector/ExportControls';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, MoveHorizontal, MoveVertical } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 
@@ -31,23 +32,19 @@ export default function HomePage() {
 
   const handleImageSelectedOrCaptured = (imageDataUrl: string) => {
     setSelectedImage(imageDataUrl);
-    // Simulate backend processing and dimension calculation
-    // For now, this is placeholder logic.
     if (!isCalibrated) {
        toast({
         title: "Calibration Required",
         description: "Please calibrate the system first for accurate measurements.",
         variant: "destructive",
       });
-      setCalculatedDimensions(null); // Clear dimensions if not calibrated
+      setCalculatedDimensions(null);
       return;
     }
 
-    // Simulate a delay for processing
     setTimeout(() => {
-      // Mock dimensions. In a real app, this would come from an API call to the Python backend.
-      const mockWidth = parseFloat((Math.random() * 20 + 5).toFixed(1)); // Random width between 5 and 25
-      const mockHeight = parseFloat((Math.random() * 30 + 10).toFixed(1)); // Random height between 10 and 40
+      const mockWidth = parseFloat((Math.random() * 20 + 5).toFixed(1));
+      const mockHeight = parseFloat((Math.random() * 30 + 10).toFixed(1));
       
       setCalculatedDimensions({
         width: mockWidth,
@@ -62,24 +59,17 @@ export default function HomePage() {
   };
 
   const handleCalibrate = (referenceSize: number, unit: string) => {
-    // In a real app, this calibration data would be used by the backend.
     console.log(`Calibrated with reference size: ${referenceSize} ${unit}`);
     setIsCalibrated(true);
     setCalibrationUnit(unit);
-    // If an image is already selected, re-process it with new calibration
     if (selectedImage) {
+      // Re-trigger calculation with new calibration if an image is already present
       handleImageSelectedOrCaptured(selectedImage);
     }
   };
 
   useEffect(() => {
-    // Reset dimensions if tab changes and calibration status changes or image is cleared.
-    // This is a basic reset, more sophisticated logic might be needed.
     setCalculatedDimensions(null);
-    if (activeTab === 'upload') {
-        // Potentially clear selectedImage if switching to upload tab from camera with an active capture
-        // For now, let's keep it simple. If image is from upload, it persists. If from camera, it might be cleared by camera tab itself.
-    }
   }, [activeTab, isCalibrated]);
 
 
@@ -128,14 +118,30 @@ export default function HomePage() {
               <CardContent className="space-y-4">
                 <DimensionDisplayArea imageSrc={selectedImage} dimensions={calculatedDimensions} />
                 {calculatedDimensions && (
-                  <div className="mt-4 text-center p-3 bg-secondary/50 rounded-md">
-                    <p className="text-lg font-semibold text-primary">
-                      Width: {calculatedDimensions.width} {calculatedDimensions.unit}
-                    </p>
-                    <p className="text-lg font-semibold text-primary">
-                      Height: {calculatedDimensions.height} {calculatedDimensions.unit}
-                    </p>
-                     <p className="text-xs text-muted-foreground mt-1">(Mock Data)</p>
+                  <div className="mt-6 p-4 border rounded-lg bg-card shadow">
+                    <h3 className="text-lg font-semibold mb-3 text-center text-primary">Calculated Dimensions</h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center">
+                          <MoveHorizontal className="w-5 h-5 mr-2 text-primary" />
+                          Width:
+                        </span>
+                        <span className="font-semibold text-xl text-foreground">
+                          {calculatedDimensions.width} {calculatedDimensions.unit}
+                        </span>
+                      </div>
+                      <Separator />
+                      <div className="flex justify-between items-center">
+                        <span className="text-muted-foreground flex items-center">
+                          <MoveVertical className="w-5 h-5 mr-2 text-primary" />
+                          Height:
+                        </span>
+                        <span className="font-semibold text-xl text-foreground">
+                          {calculatedDimensions.height} {calculatedDimensions.unit}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground/80 mt-4 text-center italic">(Mock Data)</p>
                   </div>
                 )}
               </CardContent>
